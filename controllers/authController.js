@@ -1,6 +1,6 @@
 const Usuario = require('../models/Usuario')
 const bcrypt = require('bcrypt')
-const createUserToken = require('../helpers/create-user-token')
+const createUserToken = require('../helpers/createUserToken')
 
 module.exports = class AuthController {
   static async register(req, res) {

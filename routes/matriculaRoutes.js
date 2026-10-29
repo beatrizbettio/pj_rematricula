@@ -3,9 +3,9 @@ const router = require('express').Router()
 // Requere o controller no MatriculaController
 const MatriculaController = require('../controllers/matriculaController')
 // Requere a validação do token
-const verifyToken = require('../helpers/verify-token')
+const verifyToken = require('../helpers/verifyToken')
 // Requere a validação do papel
-const checkRole = require('../helpers/check-role')
+const checkRole = require('../helpers/checkRole')
 // Requere as validações
 const { matriculaValidationRules, validate } = require('../helpers/userValidator')
 

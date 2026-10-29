@@ -5,8 +5,8 @@ const AuthController = require('../controllers/authController')
 // Requere as validações
 const { registerValidationRules, validate } = require('../helpers/userValidator')
 // Requere os helpers de validação do token e verificação do papel (role)
-const verifyToken = require('../helpers/verify-token')
-const checkRole = require('../helpers/check-role')
+const verifyToken = require('../helpers/verifyToken')
+const checkRole = require('../helpers/checkRole')
 
 // Rotas
 // Register (apenas autenticado com o papel SECRETARIA pode cadastrar)
