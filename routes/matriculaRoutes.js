@@ -19,4 +19,16 @@ router.post(
   MatriculaController.solicitar
 )
 
+// Rota para listar todas as matrículas
+router.get('/', verifyToken, MatriculaController.listar)
+
+// Rota para buscar uma matrícula por ID
+router.get('/:id', verifyToken, MatriculaController.buscarPorId)
+
+// Rota para atualizar o status de uma matrícula
+router.patch('/:id', verifyToken, MatriculaController.atualizar)
+
+// Rota para excluir uma matrícula
+router.delete('/:id', verifyToken, MatriculaController.deletar)
+
 module.exports = router
