@@ -22,5 +22,11 @@ const Matricula = conn.define('matriculas', {
     defaultValue: 'MATRICULADO'
   }
 })
+const Usuario = require('./Usuario')
+
+// Uma Matrícula pertence a um Utilizador
+Matricula.belongsTo(Usuario, { foreignKey: 'alunoId' })
+// Um Utilizador pode ter várias Matrículas
+Usuario.hasMany(Matricula, { foreignKey: 'alunoId' })
 
 module.exports = Matricula

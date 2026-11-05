@@ -44,14 +44,32 @@ module.exports = class MatriculaController {
     }
   }
 
-  // LER (READ) - Listar todas as matrículas do aluno logado
+  // LER (READ) - Listar todas as matrículas
   static async listar(req, res) {
-    const alunoId = req.user.id
+    const utilizador = req.user
+
+    let opcoesBusca = {
+      include: [
+        {
+          model: Usuario,
+          attributes: ['nome', 'email', 'cumpriuPreRequisito'] // Traz apenas os campos essenciais
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    }
+
+    // Se quem fez o pedido for ALUNO, restringimos a busca apenas ao seu ID
+    if (utilizador.role === 'ALUNO') {
+      opcoesBusca.where = { alunoId: utilizador.id }
+    }
+
+    // Se for SECRETARIA procura todas as matrículas no banco
+    
     try {
-      const matriculas = await Matricula.findAll({ where: { alunoId: alunoId } })
-      res.status(200).json({ matriculas })
+      const matriculas = await Matricula.findAll(opcoesBusca)
+      res.status(200).json({ total: matriculas.length, matriculas })
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar matrículas.' })
+      res.status(500).json({ message: 'Erro ao buscar matrículas.', erro: error.message })
     }
   }
 
@@ -107,6 +125,30 @@ module.exports = class MatriculaController {
       res.status(200).json({ message: 'Matrícula excluída com sucesso!' })
     } catch (error) {
       res.status(500).json({ message: 'Erro ao excluir matrícula.' })
+    }
+  }
+
+  // Estatisticas para Secretaria
+  static async painelEstatisticas(req, res) {
+    if (req.user.role !== 'SECRETARIA') {
+      return res.status(403).json({ message: 'Acesso negado.' })
+    }
+
+    try {
+      const ativas = await Matricula.count({ where: { status: 'MATRICULADO' } })
+      const canceladas = await Matricula.count({ where: { status: 'CANCELADA' } })
+      const total = ativas + canceladas
+
+      res.status(200).json({
+        resumo: {
+          totalDeMatriculas: total,
+          matriculasAtivas: ativas,
+          matriculasCanceladas: canceladas,
+          taxaDeRetencao: total > 0 ? `${((ativas / total) * 100).toFixed(1)}%` : '0%'
+        }
+      })
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao gerar estatísticas.' })
     }
   }
 }

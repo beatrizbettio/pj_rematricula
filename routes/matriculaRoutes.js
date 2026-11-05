@@ -18,6 +18,8 @@ router.post(
   validate,
   MatriculaController.solicitar
 )
+// Rota para visualizar estatisticas
+router.get('/estatisticas', verifyToken, checkRole('SECRETARIA'), MatriculaController.painelEstatisticas)
 
 // Rota para listar todas as matrículas
 router.get('/', verifyToken, MatriculaController.listar)
