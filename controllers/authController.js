@@ -4,6 +4,7 @@ const createUserToken = require('../helpers/createUserToken')
 
 module.exports = class AuthController {
   static async register(req, res) {
+    
     const { name, email, password, role } = req.body
 
     const userExists = await Usuario.findOne({ where: { email: email } })
@@ -16,9 +17,9 @@ module.exports = class AuthController {
 
     try {
       const newUser = await Usuario.create({
-        name,
+        nome: name,          
         email,
-        password: passwordHash,
+        senha: passwordHash, 
         role: role || 'ALUNO'
       })
 
@@ -29,6 +30,7 @@ module.exports = class AuthController {
   }
 
   static async login(req, res) {
+    
     const { email, password } = req.body
 
     const user = await Usuario.findOne({ where: { email: email } })
@@ -36,7 +38,7 @@ module.exports = class AuthController {
       return res.status(401).json({ message: 'Credenciais inválidas!' })
     }
 
-    const checkPassword = await bcrypt.compare(password, user.password)
+    const checkPassword = await bcrypt.compare(password, user.senha)
     if (!checkPassword) {
       return res.status(401).json({ message: 'Credenciais inválidas!' })
     }
